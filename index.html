@@ -209,12 +209,65 @@
 /* Footer */
 .ah-foot{margin-top:1.5rem;padding:.75rem 1rem;background:#f9f9f9;border-radius:8px;font-size:.72rem;color:#bbb;display:flex;flex-wrap:wrap;justify-content:space-between;gap:.5rem}
 
-/* Mobile */
-@media(max-width:580px){
-  .ah-stats{grid-template-columns:repeat(2,1fr)}
-  .ah-ct{flex-direction:column}
-  .ah-cr{text-align:left}
-  .ah-ev-panel{grid-template-columns:1fr}
+/* ── Responsive — mobile ── */
+@media(max-width:660px){
+  #ah{padding:1rem .65rem}
+
+  /* Stats: 2×2 */
+  .ah-stats{grid-template-columns:1fr 1fr;gap:.5rem}
+  .ah-sv{font-size:1.25rem}
+
+  /* Search takes full width on its own row; controls wrap below */
+  .ah-fp-top{gap:.4rem}
+  .ah-sw{flex:1 1 100%}
+  .ah-cleara{margin-left:auto}
+
+  /* Filter groups stack to single column */
+  .ah-fgroups{grid-template-columns:1fr}
+  .ah-fgroup.full{grid-column:1}
+
+  /* Larger chips for finger-friendly tapping */
+  .ah-chip{padding:.38rem .85rem;font-size:.82rem}
+  .ah-sbtn{padding:.38rem .8rem;font-size:.78rem}
+
+  /* Event rows wrap tightly */
+  .ah-evr{gap:.25rem}
+  .ah-flbl{min-width:72px;font-size:.67rem}
+
+  /* Card: stack Men/Women event columns */
+  .ah-ev-panel{grid-template-columns:1fr;gap:.55rem}
+
+  /* Card footer: date above, buttons below */
+  .ah-card-footer{flex-wrap:wrap;gap:.45rem;padding:.55rem .9rem}
+  .ah-footer-right{flex-wrap:wrap;gap:.35rem}
+  .ah-web{font-size:.76rem;padding:.35rem .75rem}
+  .ah-cal-link{font-size:.72rem}
+
+  /* Reduce card body padding */
+  .ah-card-body{padding:.75rem .9rem .6rem}
+  .ah-cn{font-size:.95rem}
+  .ah-meta{font-size:.78rem}
+
+  /* Action bar: wrap neatly */
+  .ah-actions{gap:.4rem}
+  .ah-act-btn{font-size:.75rem;padding:.32rem .75rem}
+
+  /* Season view compact rows */
+  .ah-crow{gap:.3rem;padding:.45rem .65rem}
+  .ah-crow-name{font-size:.82rem}
+  .ah-crow-loc{display:none}
+
+  /* Hide upcoming badge — reduces visual noise on small screens */
+  .bdg-up{display:none}
+
+  /* Footer */
+  .ah-foot{flex-direction:column;gap:.25rem;text-align:center}
+}
+
+@media(max-width:380px){
+  .ah-tog button{padding:.38rem .65rem;font-size:.75rem}
+  .ah-chip{padding:.35rem .7rem;font-size:.78rem}
+  .ah-stats{gap:.35rem}
 }
 </style>
 
@@ -357,7 +410,7 @@
 /* ════════════════════════════════════════════
    CONFIG — update DATA_URL to your GitHub raw JSON file
    ════════════════════════════════════════════ */
-var DATA_URL = 'https://raw.githubusercontent.com/SimpleScraper1/athletics-data/main/data/meets.json';
+var DATA_URL  = 'https://raw.githubusercontent.com/SimpleScraper1/athletics-data/main/data/meets.json';
 var CACHE_KEY = 'ah_v3';
 var CACHE_TTL = 6*60*60*1000;
 
