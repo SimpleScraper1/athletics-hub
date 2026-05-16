@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet Map Race Hub</title>
+<!--
+  ATHLETICS RACE HUB  v3  —  seanwhipp.com
+  ==========================================
+  WordPress Business/Creator plan:
+    Copy from <style> to </script> → paste into Custom HTML block.
+
+  Any WordPress plan (iframe):
+    <iframe src="https://YOUR-USERNAME.github.io/athletics-hub/"
+      style="width:100%;height:1050px;border:none;"></iframe>
+
+  Update DATA_URL inside the script CONFIG section.
+-->
+</head>
+<body>
+<style>
+#ah,#ah *{box-sizing:border-box;margin:0;padding:0}
+#ah button,#ah select,#ah input{font-family:inherit;cursor:pointer}
+#ah a{text-decoration:none;color:inherit}
+
+#ah{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  font-size:15px;line-height:1.5;color:#111;
+  max-width:900px;margin:0 auto;padding:2rem 1rem;
+}
+
+/* ── Header ── */
+.ah-hdr{margin-bottom:1.5rem}
+.ah-hdr-top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:.3rem}
+.ah-hdr h2{font-size:1.4rem;font-weight:700;letter-spacing:-.02em}
+.ah-hdr p{font-size:.84rem;color:#777;margin-top:.25rem}
+.ah-ts{font-size:.71rem;color:#bbb;margin-top:.3rem}
+
+/* ── Stats ── */
+.ah-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.65rem;margin-bottom:1.4rem}
+.ah-stat{background:#f7f7f7;border-radius:6px;padding:.7rem 1rem}
+.ah-sl{font-size:.69rem;color:#999;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.2rem}
+.ah-sv{font-size:1.5rem;font-weight:700;line-height:1}
+
+/* ── Filter panel ── */
+.ah-fp{background:#fff;border:1px solid #e8e8e8;border-radius:10px;padding:1.25rem;margin-bottom:1rem}
+.ah-fr{display:flex;flex-wrap:wrap;gap:.55rem;align-items:center;margin-bottom:.9rem}
+.ah-fr:last-child{margin-bottom:0}
+.ah-flbl{font-size:.69rem;text-transform:uppercase;letter-spacing:.07em;color:#aaa;min-width:68px;flex-shrink:0;padding-top:3px}
+.ah-section-label{font-size:.69rem;text-transform:uppercase;letter-spacing:.07em;color:#aaa;margin-bottom:.45rem}
+
+/* Search */
+.ah-sw{position:relative;flex:1;min-width:160px}
+.ah-sw input{width:100%;padding:.4rem .7rem .4rem 1.85rem;border:1px solid #ddd;border-radius:6px;font-size:.875rem;outline:none;background:#fafafa;transition:border-color .15s,background .15s}
+.ah-sw input:focus{border-color:#111;background:#fff}
+.ah-si{position:absolute;left:.55rem;top:50%;transform:translateY(-50%);color:#ccc;font-size:.85rem;pointer-events:none}
+
+/* Toggle buttons (gender + view) */
+.ah-tog{display:flex;border:1px solid #ddd;border-radius:6px;overflow:hidden}
+.ah-tog button{padding:.4rem .95rem;font-size:.8rem;border:none;background:transparent;color:#666;border-right:1px solid #ddd;transition:background .1s,color .1s;white-space:nowrap}
+.ah-tog button:last-child{border-right:none}
+.ah-tog button.on{background:#111;color:#fff;font-weight:600}
+
+/* Sort select */
+.ah-sort{padding:.4rem .7rem;border:1px solid #ddd;border-radius:6px;font-size:.8rem;background:#fafafa;color:#333;outline:none}
+
+/* Chips */
+.ah-chips{display:flex;flex-wrap:wrap;gap:.3rem;align-items:center}
+.ah-chip{padding:.22rem .65rem;font-size:.78rem;border:1px solid #ddd;border-radius:20px;background:transparent;color:#555;transition:all .12s;white-space:nowrap}
+.ah-chip:hover{border-color:#888;color:#111}
+.ah-chip.on{background:#111;border-color:#111;color:#fff;font-weight:600}
+.ah-chip.dl.on   {background:#1a56a0;border-color:#1a56a0}
+.ah-chip.ctg.on  {background:#b45309;border-color:#b45309}
+.ah-chip.cts.on  {background:#555;border-color:#555}
+.ah-chip.ctb.on  {background:#7c3d12;border-color:#7c3d12}
+.ah-chip.itg.on  {background:#166534;border-color:#166534}
+.ah-chip.wch.on  {background:#6d28d9;border-color:#6d28d9}
+.ah-chip.nat.on  {background:#374151;border-color:#374151}
+.ah-chip.mo.on   {background:#1a56a0;border-color:#1a56a0}  /* month active */
+.ah-chip.ind-on  {background:#0e7490;border-color:#0e7490}  /* indoor active */
+.ah-clr{font-size:.74rem;color:#bbb;background:none;border:none;padding:.2rem .4rem;white-space:nowrap}
+.ah-clr:hover{color:#555}
+.ah-cleara{font-size:.74rem;color:#bbb;background:none;border:1px solid #eee;border-radius:20px;padding:.2rem .65rem;white-space:nowrap}
+.ah-cleara:hover{color:#555;border-color:#bbb}
+
+/* Month quick buttons */
+.ah-season-btns{display:flex;gap:.35rem;margin-bottom:.45rem}
+.ah-sbtn{padding:.22rem .75rem;font-size:.75rem;border:1px solid #ddd;border-radius:20px;background:transparent;color:#555;transition:all .12s}
+.ah-sbtn:hover{border-color:#888;color:#111}
+.ah-sbtn.on{background:#0e7490;border-color:#0e7490;color:#fff;font-weight:600}
+
+/* Event group rows */
+.ah-evg{display:flex;flex-direction:column;gap:.35rem}
+.ah-evr{display:flex;flex-wrap:wrap;gap:.3rem;align-items:center}
+
+/* Action bar */
+.ah-actions{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-bottom:.8rem}
+.ah-cnt{font-size:.8rem;color:#999;flex:1}
+.ah-act-btn{padding:.35rem .9rem;font-size:.78rem;border:1px solid #ddd;border-radius:6px;background:#fff;color:#555;transition:all .12s;display:flex;align-items:center;gap:.3rem}
+.ah-act-btn:hover{border-color:#888;color:#111}
+.ah-act-btn.primary{background:#111;border-color:#111;color:#fff}
+.ah-act-btn.primary:hover{background:#333;border-color:#333}
+.ah-copied{color:#059669;font-size:.75rem}
+
+/* ── Cards ── */
+.ah-cards{display:flex;flex-direction:column;gap:.7rem}
+
+.ah-card{background:#fff;border:1px solid #e8e8e8;border-radius:10px;overflow:hidden;transition:border-color .15s,box-shadow .15s}
+.ah-card:hover{border-color:#bbb}
+.ah-card.past{opacity:.5}
+.ah-card.indoor .ah-card-bar{background:#0e7490}
+.ah-card-bar{height:3px;background:#111}
+.ah-card-bar.dl   {background:#1a56a0}
+.ah-card-bar.ctg  {background:#b45309}
+.ah-card-bar.cts  {background:#777}
+.ah-card-bar.ctb  {background:#7c3d12}
+.ah-card-bar.itg  {background:#0e7490}
+.ah-card-bar.wch  {background:#6d28d9}
+.ah-card-bar.nat  {background:#374151}
+
+.ah-card-body{padding:1rem 1.2rem}
+
+/* Card top row */
+.ah-ct{display:flex;flex-wrap:wrap;gap:.75rem;justify-content:space-between;margin-bottom:.85rem}
+.ah-cm{flex:1;min-width:190px}
+.ah-tr{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin-bottom:.3rem}
+.ah-cn{font-size:1.05rem;font-weight:700;letter-spacing:-.01em}
+.ah-flag{font-size:1rem}
+.ah-bdg{font-size:.68rem;font-weight:700;padding:.15rem .6rem;border-radius:20px;letter-spacing:.03em;white-space:nowrap}
+.bdg-dl  {background:#dbeafe;color:#1e3a8a}
+.bdg-ctg {background:#fef3c7;color:#78350f}
+.bdg-cts {background:#f3f4f6;color:#374151}
+.bdg-ctb {background:#fde8d4;color:#7c2d12}
+.bdg-itg {background:#cffafe;color:#164e63}
+.bdg-wch {background:#ede9fe;color:#4c1d95}
+.bdg-nat {background:#f3f4f6;color:#374151}
+.bdg-oth {background:#f3f4f6;color:#6b7280}
+.bdg-up  {background:#d1fae5;color:#065f46}
+.bdg-pst {background:#f3f4f6;color:#9ca3af}
+.bdg-ind {background:#cffafe;color:#0e7490}
+
+.ah-meta{font-size:.81rem;color:#777}
+
+/* Right column */
+.ah-cr{text-align:right;flex-shrink:0}
+.ah-date{font-size:.9rem;font-weight:700;letter-spacing:-.01em;margin-bottom:.2rem}
+.ah-loc-small{font-size:.78rem;color:#888;margin-bottom:.6rem}
+
+/* Website button */
+.ah-web{display:inline-block;padding:.4rem 1rem;border-radius:6px;font-size:.8rem;font-weight:600;border:1.5px solid #1a56a0;color:#1a56a0;background:transparent;transition:all .15s;white-space:nowrap}
+.ah-web:hover{background:#eff6ff}
+.ah-web.none{border-color:#eee;color:#ccc;cursor:default;font-weight:400;font-size:.78rem}
+.ah-web.email{border-color:#059669;color:#059669}
+.ah-web.email:hover{background:#f0fdf4}
+.ah-cal-link{display:block;font-size:.72rem;color:#1a56a0;margin-top:.35rem;text-align:right;cursor:pointer;background:none;border:none;padding:0;width:100%}
+.ah-cal-link:hover{text-decoration:underline}
+
+/* Event panel — two columns */
+.ah-ev-panel{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.ah-ev-panel.single{grid-template-columns:1fr}
+.ah-evcol{}
+.ah-evhdr{font-size:.69rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#aaa;margin-bottom:.4rem}
+.ah-pills{display:flex;flex-wrap:wrap;gap:.25rem}
+.ah-pill{font-size:.71rem;padding:.15rem .5rem;border-radius:4px;line-height:1.4}
+.p-sprint{background:#dbeafe;color:#1e40af}
+.p-mid   {background:#d1fae5;color:#065f46}
+.p-long  {background:#dcfce7;color:#166534}
+.p-hurdle{background:#fef9c3;color:#713f12}
+.p-jump  {background:#fce7f3;color:#831843}
+.p-throw {background:#ede9fe;color:#4c1d95}
+.p-relay {background:#f3f4f6;color:#374151}
+.p-road  {background:#fff7ed;color:#9a3412}
+.p-walk  {background:#ecfdf5;color:#064e3b}
+.p-other {background:#f3f4f6;color:#6b7280}
+.ah-pill.hi{font-weight:700;outline:1.5px solid currentColor;outline-offset:0}
+.ah-no-ev{font-size:.78rem;color:#ccc;font-style:italic}
+
+/* ── Season (month-grouped) view ── */
+.ah-month-hdr{display:flex;align-items:baseline;gap:.6rem;padding:.6rem 0 .4rem;border-bottom:1px solid #f0f0f0;margin-top:.5rem;margin-bottom:.4rem}
+.ah-month-hdr:first-child{margin-top:0}
+.ah-month-name{font-size:.85rem;font-weight:700;letter-spacing:-.01em}
+.ah-month-count{font-size:.75rem;color:#aaa}
+
+/* Compact row for season view */
+.ah-crow{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;padding:.55rem .75rem;background:#fff;border:1px solid #e8e8e8;border-radius:8px;margin-bottom:.35rem;transition:border-color .12s}
+.ah-crow:hover{border-color:#bbb}
+.ah-crow.past{opacity:.5}
+.ah-crow-date{font-size:.78rem;font-weight:600;color:#555;min-width:55px;flex-shrink:0}
+.ah-crow-name{font-size:.88rem;font-weight:700;flex:1;min-width:130px}
+.ah-crow-loc{font-size:.75rem;color:#888;white-space:nowrap}
+.ah-crow-web{font-size:.75rem;color:#1a56a0;border:1px solid #dbeafe;border-radius:4px;padding:.15rem .5rem;white-space:nowrap;background:#eff6ff}
+.ah-crow-web:hover{background:#dbeafe}
+.ah-crow-web.none{color:#ccc;border-color:#f0f0f0;background:transparent;cursor:default}
+.ah-crow-bar{width:3px;height:20px;border-radius:2px;flex-shrink:0}
+
+/* States */
+.ah-loading,.ah-empty,.ah-err{text-align:center;padding:3rem 1rem;color:#aaa;font-size:.875rem}
+@keyframes ah-blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
+.ah-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#ddd;animation:ah-blink 1.3s infinite}
+.ah-dot:nth-child(2){animation-delay:.2s}.ah-dot:nth-child(3){animation-delay:.4s}
+
+/* Footer */
+.ah-foot{margin-top:1.5rem;padding:.75rem 1rem;background:#f9f9f9;border-radius:8px;font-size:.72rem;color:#bbb;display:flex;flex-wrap:wrap;justify-content:space-between;gap:.5rem}
+
+/* Mobile */
+@media(max-width:580px){
+  .ah-stats{grid-template-columns:repeat(2,1fr)}
+  .ah-ct{flex-direction:column}
+  .ah-cr{text-align:left}
+  .ah-ev-panel{grid-template-columns:1fr}
+}
+</style>
+
+<div id="ah">
+
+  <div class="ah-hdr">
+    <div class="ah-hdr-top">
+      <h2>Athletics Race Hub</h2>
+    </div>
+    <p>Filter upcoming meets by event and gender. Data from World Athletics — auto-updated every 6 hours.</p>
+    <div class="ah-ts" id="ah-ts"></div>
+  </div>
+
+  <!-- Stats -->
+  <div class="ah-stats">
+    <div class="ah-stat"><div class="ah-sl">Total meets</div><div class="ah-sv" id="s-tot">—</div></div>
+    <div class="ah-stat"><div class="ah-sl">Upcoming</div><div class="ah-sv" id="s-up">—</div></div>
+    <div class="ah-stat"><div class="ah-sl">With website</div><div class="ah-sv" id="s-web">—</div></div>
+    <div class="ah-stat"><div class="ah-sl">Showing</div><div class="ah-sv" id="s-show">—</div></div>
+  </div>
+
+  <!-- Filters -->
+  <div class="ah-fp">
+
+    <!-- Row 1: search + gender + view + sort -->
+    <div class="ah-fr">
+      <div class="ah-sw">
+        <span class="ah-si">⌕</span>
+        <input type="text" id="ah-q" placeholder="Search meet, city, country…">
+      </div>
+      <div class="ah-tog" id="ah-gen">
+        <button class="on" data-g="All">All</button>
+        <button data-g="M">Men</button>
+        <button data-g="W">Women</button>
+      </div>
+      <div class="ah-tog" id="ah-view">
+        <button class="on" data-v="list">List</button>
+        <button data-v="season">Season</button>
+      </div>
+      <select class="ah-sort" id="ah-sort">
+        <option value="date">Sort: date</option>
+        <option value="level">Sort: level</option>
+      </select>
+      <button class="ah-cleara" id="ah-clearall">Clear all filters</button>
+    </div>
+
+    <!-- Row 2: season (indoor/outdoor) + month chips -->
+    <div class="ah-fr" style="align-items:flex-start">
+      <span class="ah-flbl" style="padding-top:5px">Period</span>
+      <div style="flex:1">
+        <div class="ah-season-btns">
+          <button class="ah-sbtn" data-season="indoor">Indoor season</button>
+          <button class="ah-sbtn" data-season="outdoor">Outdoor season</button>
+          <button class="ah-sbtn" data-season="clear">All year</button>
+        </div>
+        <div class="ah-chips" id="ah-months">
+          <!-- populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3: region filter -->
+    <div class="ah-fr">
+      <span class="ah-flbl">Region</span>
+      <div class="ah-chips" id="ah-regions">
+        <button class="ah-chip" data-r="EUR">Europe</button>
+        <button class="ah-chip" data-r="AME">Americas</button>
+        <button class="ah-chip" data-r="ASI">Asia / Mid East</button>
+        <button class="ah-chip" data-r="AFR">Africa</button>
+        <button class="ah-chip" data-r="OCE">Oceania</button>
+        <button class="ah-clr" id="ah-rclr" style="display:none">✕</button>
+      </div>
+    </div>
+
+    <!-- Row 4: competition level -->
+    <div class="ah-fr">
+      <span class="ah-flbl">Level</span>
+      <div class="ah-chips" id="ah-cats">
+        <button class="ah-chip dl"  data-c="DL">Diamond League</button>
+        <button class="ah-chip ctg" data-c="CTG">CT Gold</button>
+        <button class="ah-chip cts" data-c="CTS">CT Silver</button>
+        <button class="ah-chip ctb" data-c="CTB">CT Bronze</button>
+        <button class="ah-chip itg" data-c="ITG">Indoor Tour</button>
+        <button class="ah-chip wch" data-c="WCH">World Chpts</button>
+        <button class="ah-chip nat" data-c="NAT">National Chpts</button>
+        <button class="ah-clr" id="ah-cclr" style="display:none">✕</button>
+      </div>
+    </div>
+
+    <!-- Row 5: event filter -->
+    <div class="ah-fr" style="align-items:flex-start">
+      <span class="ah-flbl" style="padding-top:5px">Event</span>
+      <div style="flex:1">
+        <div class="ah-evg" id="ah-evg"></div>
+        <button class="ah-clr" id="ah-evclr" style="display:none;margin-top:.4rem">✕ clear event filters</button>
+      </div>
+    </div>
+
+  </div><!-- /filters -->
+
+  <!-- Action bar -->
+  <div class="ah-actions">
+    <div class="ah-cnt" id="ah-cnt"></div>
+    <button class="ah-act-btn" id="ah-ics-btn">⬇ Export to calendar (.ics)</button>
+    <button class="ah-act-btn" id="ah-share-btn">⎘ Copy filtered link</button>
+    <span class="ah-copied" id="ah-copied" style="display:none">Copied!</span>
+  </div>
+
+  <div class="ah-cards" id="ah-cards">
+    <div class="ah-loading">
+      <span class="ah-dot"></span><span class="ah-dot"></span><span class="ah-dot"></span>
+      <p style="margin-top:.75rem">Loading meets…</p>
+    </div>
+  </div>
+
+  <div class="ah-foot">
+    <span>Calendar data: World Athletics. Auto-refreshes every 6 hours.</span>
+    <span>Verify event programmes and contact details directly with each meet.</span>
+  </div>
+
+</div><!-- /#ah -->
+
+
+<script>
+(function(){
+"use strict";
+
+/* ════════════════════════════════════════════
+   CONFIG — update DATA_URL to your GitHub raw JSON file
+   ════════════════════════════════════════════ */
+var DATA_URL = 'https://raw.githubusercontent.com/SimpleScraper1/athletics-data/main/data/meets.json';
+var CACHE_KEY = 'ah_v3';
+var CACHE_TTL = 6*60*60*1000;
+
+/* ════════════════════════════════════════════
+   EVENT DEFINITIONS
+   ════════════════════════════════════════════ */
+var EV_GROUPS=[
+  {lbl:'Sprints',        grp:'sprint', ids:['60m','100m','200m','400m']},
+  {lbl:'Middle distance',grp:'mid',    ids:['800m','1500m','mile']},
+  {lbl:'Long distance',  grp:'long',   ids:['3000m','5000m','10000m']},
+  {lbl:'Hurdles & SC',   grp:'hurdle', ids:['60mh','100mh','110mh','400mh','3000sc','2000sc']},
+  {lbl:'Jumps',          grp:'jump',   ids:['hj','pv','lj','tj']},
+  {lbl:'Throws',         grp:'throw',  ids:['sp','dt','ht','jt']},
+  {lbl:'Relays',         grp:'relay',  ids:['4x100','4x200','4x400','4x800']},
+  {lbl:'Road',           grp:'road',   ids:['5km','10km','hmar','mar']},
+  {lbl:'Race walk',      grp:'walk',   ids:['20krw','35krw','50krw']},
+  {lbl:'Combined',       grp:'other',  ids:['dec','hep','pen','oct']},
+];
+var EV_LBL={
+  '60m':'60m','100m':'100m','200m':'200m','400m':'400m',
+  '800m':'800m','1500m':'1500m','mile':'Mile',
+  '3000m':'3000m','5000m':'5000m','10000m':'10,000m',
+  '60mh':'60mH','100mh':'100mH','110mh':'110mH','400mh':'400mH',
+  '3000sc':'3000SC','2000sc':'2000SC',
+  'hj':'HJ','pv':'PV','lj':'LJ','tj':'TJ',
+  'sp':'SP','dt':'DT','ht':'HT','jt':'JT',
+  '4x100':'4×100','4x200':'4×200','4x400':'4×400','4x800':'4×800',
+  '5km':'5km Road','10km':'10km Road','hmar':'Half Mar','mar':'Marathon',
+  '20krw':'20km Walk','35krw':'35km Walk','50krw':'50km Walk',
+  'dec':'Decathlon','hep':'Heptathlon','pen':'Pentathlon','oct':'Octathlon',
+};
+var EV_GRP_MAP={};
+EV_GROUPS.forEach(function(g){g.ids.forEach(function(id){EV_GRP_MAP[id]=g.grp;});});
+
+var MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var INDOOR_MONTHS=[1,2,3,11,12];
+var OUTDOOR_MONTHS=[4,5,6,7,8,9,10];
+
+var CAT_BADGE={
+  DL:'bdg-dl',CTG:'bdg-ctg',CTS:'bdg-cts',CTB:'bdg-ctb',
+  ITG:'bdg-itg',ITS:'bdg-cts',WCH:'bdg-wch',OLY:'bdg-wch',
+  AREA:'bdg-nat',NAT:'bdg-nat',
+};
+var CAT_LBL={
+  DL:'Diamond League',CTG:'CT Gold',CTS:'CT Silver',CTB:'CT Bronze',
+  ITG:'Indoor Tour Gold',ITS:'Indoor Tour Silver',WCH:'World Chpts',
+  OLY:'Olympic Games',AREA:'Area Chpts',NAT:'National Chpts',
+};
+var CAT_BAR={
+  DL:'dl',CTG:'ctg',CTS:'cts',CTB:'ctb',ITG:'itg',ITS:'itg',
+  WCH:'wch',OLY:'wch',AREA:'nat',NAT:'nat',
+};
+var CAT_ORD={DL:0,CTG:1,CTS:2,CTB:3,ITG:4,ITS:5,WCH:6,OLY:7,AREA:8,NAT:9,OTHER:10};
+
+var FLAGS={
+  GBR:'🇬🇧',FRA:'🇫🇷',GER:'🇩🇪',ITA:'🇮🇹',SWE:'🇸🇪',NOR:'🇳🇴',FIN:'🇫🇮',
+  NED:'🇳🇱',BEL:'🇧🇪',SUI:'🇨🇭',CZE:'🇨🇿',POL:'🇵🇱',GRE:'🇬🇷',ESP:'🇪🇸',
+  POR:'🇵🇹',TUR:'🇹🇷',UKR:'🇺🇦',HUN:'🇭🇺',AUT:'🇦🇹',DEN:'🇩🇰',SVK:'🇸🇰',
+  SLO:'🇸🇮',CRO:'🇭🇷',SRB:'🇷🇸',ROM:'🇷🇴',BUL:'🇧🇬',LAT:'🇱🇻',EST:'🇪🇪',
+  LTU:'🇱🇹',MON:'🇲🇨',ISR:'🇮🇱',IRL:'🇮🇪',BLR:'🇧🇾',
+  USA:'🇺🇸',CAN:'🇨🇦',JAM:'🇯🇲',BAH:'🇧🇸',BRA:'🇧🇷',ARG:'🇦🇷',MEX:'🇲🇽',
+  TTO:'🇹🇹',COL:'🇨🇴',CUB:'🇨🇺',
+  QAT:'🇶🇦',UAE:'🇦🇪',CHN:'🇨🇳',JPN:'🇯🇵',KOR:'🇰🇷',IND:'🇮🇳',KAZ:'🇰🇿',BRN:'🇧🇭',
+  KEN:'🇰🇪',ETH:'🇪🇹',MAR:'🇲🇦',RSA:'🇿🇦',NGR:'🇳🇬',ALG:'🇩🇿',TUN:'🇹🇳',EGY:'🇪🇬',
+  UGA:'🇺🇬',
+  AUS:'🇦🇺',NZL:'🇳🇿',
+};
+
+/* ════════════════════════════════════════════
+   STATE
+   ════════════════════════════════════════════ */
+var S={
+  meets:[],loading:true,error:false,updated:null,
+  gender:'All',selEvs:[],selCats:[],selMonths:[],selRegion:'',
+  q:'',sort:'date',view:'list'
+};
+var TODAY=(function(){var d=new Date();d.setHours(0,0,0,0);return d;})();
+
+/* ════════════════════════════════════════════
+   UTILS
+   ════════════════════════════════════════════ */
+function isPast(m){return new Date(m.dateStart)<TODAY;}
+function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;}
+
+function fmtDateRange(s,e){
+  if(!s)return'';
+  var ds=new Date(s);
+  if(!e||e===s){
+    return ds.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  }
+  var de=new Date(e);
+  if(ds.getMonth()===de.getMonth()&&ds.getFullYear()===de.getFullYear()){
+    return ds.getDate()+'\u2013'+de.getDate()+' '+ds.toLocaleDateString('en-GB',{month:'short',year:'numeric'});
+  }
+  return ds.toLocaleDateString('en-GB',{day:'numeric',month:'short'})+'\u2013'+de.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+}
+function fmtCompact(s){
+  var d=new Date(s);
+  return d.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+}
+function meetMonth(m){return new Date(m.dateStart).getMonth()+1;}
+function getMeetEvs(m,gender){
+  if(!m.events)return[];
+  if(gender==='M')return m.events.men||[];
+  if(gender==='W')return m.events.women||[];
+  var all=[],men=m.events.men||[],w=m.events.women||[];
+  all=men.slice();
+  w.forEach(function(x){if(all.indexOf(x)===-1)all.push(x);});
+  return all;
+}
+
+/* ════════════════════════════════════════════
+   URL PARAMS
+   ════════════════════════════════════════════ */
+function readParams(){
+  var p=new URLSearchParams(window.location.search);
+  if(p.get('g'))S.gender=p.get('g');
+  if(p.get('e'))S.selEvs=p.get('e').split(',').filter(Boolean);
+  if(p.get('c'))S.selCats=p.get('c').split(',').filter(Boolean);
+  if(p.get('m'))S.selMonths=p.get('m').split(',').map(Number).filter(Boolean);
+  if(p.get('r'))S.selRegion=p.get('r');
+  if(p.get('s'))S.sort=p.get('s');
+  if(p.get('v'))S.view=p.get('v');
+}
+function writeParams(){
+  var p=new URLSearchParams();
+  if(S.gender!=='All')p.set('g',S.gender);
+  if(S.selEvs.length)p.set('e',S.selEvs.join(','));
+  if(S.selCats.length)p.set('c',S.selCats.join(','));
+  if(S.selMonths.length)p.set('m',S.selMonths.join(','));
+  if(S.selRegion)p.set('r',S.selRegion);
+  if(S.sort!=='date')p.set('s',S.sort);
+  if(S.view!=='list')p.set('v',S.view);
+  var qs=p.toString();
+  history.replaceState(null,'',qs?'?'+qs:window.location.pathname);
+}
+
+/* ════════════════════════════════════════════
+   FILTERING
+   ════════════════════════════════════════════ */
+function getFiltered(){
+  var meets=S.meets.filter(function(m){
+    if(S.q){
+      var q=S.q.toLowerCase();
+      if((m.name||'').toLowerCase().indexOf(q)===-1&&
+         (m.city||'').toLowerCase().indexOf(q)===-1&&
+         (m.countryName||'').toLowerCase().indexOf(q)===-1&&
+         (m.countryCode||'').toLowerCase().indexOf(q)===-1)return false;
+    }
+    if(S.selMonths.length&&S.selMonths.indexOf(meetMonth(m))===-1)return false;
+    if(S.selRegion&&m.region!==S.selRegion)return false;
+    if(S.selCats.length&&S.selCats.indexOf(m.category)===-1)return false;
+    var evs=getMeetEvs(m,S.gender);
+    if(S.selEvs.length){
+      if(!S.selEvs.every(function(id){return evs.indexOf(id)!==-1;}))return false;
+    }else if(S.gender!=='All'){
+      var gEvs=S.gender==='M'?(m.events&&m.events.men||[]):(m.events&&m.events.women||[]);
+      if(!gEvs.length)return false;
+    }
+    return true;
+  });
+  meets.sort(function(a,b){
+    if(S.sort==='level'){
+      var ca=CAT_ORD[a.category]!==undefined?CAT_ORD[a.category]:99;
+      var cb=CAT_ORD[b.category]!==undefined?CAT_ORD[b.category]:99;
+      if(ca!==cb)return ca-cb;
+    }
+    return new Date(a.dateStart)-new Date(b.dateStart);
+  });
+  return meets;
+}
+
+/* ════════════════════════════════════════════
+   ICAL EXPORT
+   ════════════════════════════════════════════ */
+function generateICS(meets){
+  var lines=[
+    'BEGIN:VCALENDAR','VERSION:2.0',
+    'PRODID:-//Athletics Hub//Whipp Sports//EN',
+    'CALSCALE:GREGORIAN','METHOD:PUBLISH',
+    'X-WR-CALNAME:Athletics Race Hub — seanwhipp.com',
+  ];
+  meets.forEach(function(m){
+    var start=(m.dateStart||'').replace(/-/g,'');
+    if(!start)return;
+    var endDate=new Date(m.dateEnd||m.dateStart);
+    endDate.setDate(endDate.getDate()+1);
+    var end=endDate.toISOString().slice(0,10).replace(/-/g,'');
+    var men=((m.events&&m.events.men)||[]).map(function(id){return EV_LBL[id]||id;}).join(', ');
+    var women=((m.events&&m.events.women)||[]).map(function(id){return EV_LBL[id]||id;}).join(', ');
+    var desc='Men: '+(men||'\u2014')+'\\nWomen: '+(women||'\u2014');
+    if(m.website)desc+='\\n\\n'+m.website;
+    if(m.contact&&m.contact.email)desc+='\\nContact: '+m.contact.email;
+    desc=desc.replace(/,/g,'\\,').replace(/;/g,'\\;');
+    var catLabel=CAT_LBL[m.category]||m.category||'';
+    var summary=(m.name+(catLabel?' \u2014 '+catLabel:'')).replace(/,/g,'\\,');
+    lines.push('BEGIN:VEVENT');
+    lines.push('DTSTART;VALUE=DATE:'+start);
+    lines.push('DTEND;VALUE=DATE:'+end);
+    lines.push('SUMMARY:'+summary);
+    lines.push('LOCATION:'+((m.city?m.city+', ':'')+m.countryName).replace(/,/g,'\\,'));
+    lines.push('DESCRIPTION:'+desc);
+    if(m.website)lines.push('URL:'+m.website);
+    lines.push('UID:ath-hub-'+m.id+'@seanwhipp.com');
+    lines.push('END:VEVENT');
+  });
+  lines.push('END:VCALENDAR');
+  return lines.join('\r\n');
+}
+function downloadICS(filtered){
+  if(!filtered.length){alert('No meets to export with current filters.');return;}
+  var content=generateICS(filtered);
+  var blob=new Blob([content],{type:'text/calendar;charset=utf-8'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;a.download='athletics-hub.ics';
+  document.body.appendChild(a);a.click();
+  document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+
+/* ════════════════════════════════════════════
+   RENDER — STATS
+   ════════════════════════════════════════════ */
+function renderStats(filtered){
+  document.getElementById('s-tot').textContent=S.meets.length;
+  document.getElementById('s-up').textContent=S.meets.filter(function(m){return!isPast(m);}).length;
+  document.getElementById('s-web').textContent=S.meets.filter(function(m){return m.website;}).length;
+  document.getElementById('s-show').textContent=filtered.length;
+  var cnt=filtered.length;
+  document.getElementById('ah-cnt').textContent=cnt===0?'No meets match your filters':cnt+' meet'+(cnt!==1?'s':'')+' found';
+  if(S.updated)document.getElementById('ah-ts').textContent='Last updated: '+new Date(S.updated).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short',timeZone:'UTC'})+' UTC';
+}
+
+/* ════════════════════════════════════════════
+   RENDER — FILTER CONTROLS
+   ════════════════════════════════════════════ */
+function renderMonthChips(){
+  var wrap=document.getElementById('ah-months');
+  wrap.innerHTML='';
+  MONTHS.forEach(function(lbl,i){
+    var mo=i+1;
+    var b=el('button','ah-chip mo'+(S.selMonths.indexOf(mo)!==-1?' on':''));
+    b.textContent=lbl;
+    b.dataset.mo=mo;
+    b.addEventListener('click',function(){
+      var idx=S.selMonths.indexOf(mo);
+      if(idx===-1)S.selMonths.push(mo);else S.selMonths.splice(idx,1);
+      writeParams();renderAll();
+    });
+    wrap.appendChild(b);
+  });
+}
+function renderEvGroups(){
+  var wrap=document.getElementById('ah-evg');
+  wrap.innerHTML='';
+  EV_GROUPS.forEach(function(grp){
+    var row=el('div','ah-evr');
+    var lbl=el('span','ah-flbl');lbl.style.minWidth='90px';lbl.textContent=grp.lbl;
+    row.appendChild(lbl);
+    grp.ids.forEach(function(id){
+      var b=el('button','ah-chip');
+      b.textContent=EV_LBL[id]||id;b.dataset.ev=id;
+      if(S.selEvs.indexOf(id)!==-1)b.classList.add('on');
+      b.addEventListener('click',function(){
+        var i=S.selEvs.indexOf(id);
+        if(i===-1)S.selEvs.push(id);else S.selEvs.splice(i,1);
+        writeParams();renderAll();
+      });
+      row.appendChild(b);
+    });
+    wrap.appendChild(row);
+  });
+  document.getElementById('ah-evclr').style.display=S.selEvs.length?'inline':'none';
+}
+function renderCatChips(){
+  document.querySelectorAll('#ah-cats .ah-chip').forEach(function(b){b.classList.toggle('on',S.selCats.indexOf(b.dataset.c)!==-1);});
+  document.getElementById('ah-cclr').style.display=S.selCats.length?'inline':'none';
+}
+function renderRegionChips(){
+  document.querySelectorAll('#ah-regions .ah-chip').forEach(function(b){b.classList.toggle('on',b.dataset.r===S.selRegion);});
+  document.getElementById('ah-rclr').style.display=S.selRegion?'inline':'none';
+}
+function renderGenToggle(){document.querySelectorAll('#ah-gen button').forEach(function(b){b.classList.toggle('on',b.dataset.g===S.gender);});}
+function renderViewToggle(){document.querySelectorAll('#ah-view button').forEach(function(b){b.classList.toggle('on',b.dataset.v===S.view);});}
+
+/* ════════════════════════════════════════════
+   RENDER — CARD (list view)
+   ════════════════════════════════════════════ */
+function buildPills(evIds,container,css){
+  if(!evIds||!evIds.length){container.appendChild(el('span','ah-no-ev','—'));return;}
+  evIds.forEach(function(id){
+    var grp=EV_GRP_MAP[id]||'other';
+    var hi=S.selEvs.indexOf(id)!==-1;
+    container.appendChild(el('span','ah-pill p-'+grp+(hi?' hi':''),EV_LBL[id]||id));
+  });
+}
+
+function buildCard(meet){
+  var past=isPast(meet);
+  var card=el('div','ah-card'+(past?' past':'')+(meet.isIndoor?' indoor':''));
+
+  // Colour bar at top
+  var bar=el('div','ah-card-bar '+(CAT_BAR[meet.category]||''));
+  card.appendChild(bar);
+
+  var body=el('div','ah-card-body');
+
+  // Top row
+  var top=el('div','ah-ct');
+  var main=el('div','ah-cm');
+  var tr=el('div','ah-tr');
+
+  var flag=FLAGS[meet.countryCode]||'';
+  if(flag){var fs=el('span','ah-flag');fs.textContent=flag;tr.appendChild(fs);}
+  tr.appendChild(el('span','ah-cn',meet.name));
+
+  var catLbl=CAT_LBL[meet.category]||meet.category||'Other';
+  var catBdg=CAT_BADGE[meet.category]||'bdg-oth';
+  tr.appendChild(el('span','ah-bdg '+catBdg,catLbl));
+  if(meet.isIndoor)tr.appendChild(el('span','ah-bdg bdg-ind','Indoor'));
+  if(past)tr.appendChild(el('span','ah-bdg bdg-pst','Past'));
+  else tr.appendChild(el('span','ah-bdg bdg-up','Upcoming'));
+  main.appendChild(tr);
+  main.appendChild(el('div','ah-meta',(meet.city?meet.city+', ':'')+meet.countryName));
+  top.appendChild(main);
+
+  // Right
+  var cr=el('div','ah-cr');
+  cr.appendChild(el('div','ah-date',fmtDateRange(meet.dateStart,meet.dateEnd)));
+
+  if(meet.website){
+    var wa=document.createElement('a');
+    wa.href=meet.website;wa.target='_blank';wa.rel='noopener noreferrer';
+    wa.className='ah-web';wa.textContent='Meet website \u2192';
+    cr.appendChild(wa);
+  }else if(meet.contact&&meet.contact.email){
+    var ea=document.createElement('a');
+    ea.href='mailto:'+meet.contact.email;
+    ea.className='ah-web email';ea.textContent='Contact meet \u2192';
+    cr.appendChild(ea);
+  }else{
+    cr.appendChild(el('span','ah-web none','No website'));
+  }
+
+  // Add to calendar link
+  var calBtn=el('button','ah-cal-link','\uFF0B Add to calendar');
+  calBtn.addEventListener('click',function(){downloadICS([meet]);});
+  cr.appendChild(calBtn);
+  top.appendChild(cr);
+  body.appendChild(top);
+
+  // Event panel
+  var panel=el('div','ah-ev-panel'+(S.gender!=='All'?' single':''));
+  if(S.gender==='All'){
+    var mc=el('div','ah-evcol');
+    mc.appendChild(el('div','ah-evhdr','Men'));
+    var mp=el('div','ah-pills');
+    buildPills(meet.events&&meet.events.men,mp);
+    mc.appendChild(mp);panel.appendChild(mc);
+
+    var wc=el('div','ah-evcol');
+    wc.appendChild(el('div','ah-evhdr','Women'));
+    var wp=el('div','ah-pills');
+    buildPills(meet.events&&meet.events.women,wp);
+    wc.appendChild(wp);panel.appendChild(wc);
+  }else{
+    var sc=el('div','ah-evcol');
+    var slbl=S.gender==='M'?'Men\'s programme':'Women\'s programme';
+    sc.appendChild(el('div','ah-evhdr',slbl));
+    var sp=el('div','ah-pills');
+    buildPills(S.gender==='M'?(meet.events&&meet.events.men):(meet.events&&meet.events.women),sp);
+    sc.appendChild(sp);panel.appendChild(sc);
+  }
+  body.appendChild(panel);
+  card.appendChild(body);
+  return card;
+}
+
+/* ════════════════════════════════════════════
+   RENDER — SEASON (month-grouped) VIEW
+   ════════════════════════════════════════════ */
+function buildCompactRow(m){
+  var past=isPast(m);
+  var row=el('div','ah-crow'+(past?' past':''));
+  var bar=el('div','ah-crow-bar');
+  bar.style.background=({DL:'#1a56a0',CTG:'#b45309',CTS:'#777',CTB:'#7c3d12',ITG:'#0e7490',WCH:'#6d28d9'})[m.category]||'#ccc';
+  row.appendChild(bar);
+
+  var dt=el('div','ah-crow-date',fmtCompact(m.dateStart));
+  row.appendChild(dt);
+
+  var flag=FLAGS[m.countryCode]||'';
+  var nameSpan=el('span','ah-crow-name',(flag?flag+' ':'')+m.name);
+  row.appendChild(nameSpan);
+
+  var catBdg=el('span','ah-bdg '+(CAT_BADGE[m.category]||'bdg-oth'),CAT_LBL[m.category]||m.category);
+  row.appendChild(catBdg);
+
+  row.appendChild(el('span','ah-crow-loc',(m.city?m.city+', ':'')+m.countryCode));
+
+  if(m.website){
+    var wa=document.createElement('a');
+    wa.href=m.website;wa.target='_blank';wa.rel='noopener noreferrer';
+    wa.className='ah-crow-web';wa.textContent='Website';
+    row.appendChild(wa);
+  }else{
+    row.appendChild(el('span','ah-crow-web none','—'));
+  }
+  return row;
+}
+
+function renderSeasonView(filtered){
+  var wrap=document.getElementById('ah-cards');
+  wrap.innerHTML='';
+  if(!filtered.length){
+    wrap.innerHTML='<div class="ah-empty">No meets match your current filters.</div>';return;
+  }
+  var groups={},order=[];
+  filtered.forEach(function(m){
+    var d=new Date(m.dateStart);
+    var k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+    if(!groups[k]){groups[k]=[];order.push(k);}
+    groups[k].push(m);
+  });
+  order.forEach(function(k){
+    var ms=groups[k];
+    var d=new Date(k+'-01');
+    var hdr=el('div','ah-month-hdr');
+    hdr.appendChild(el('span','ah-month-name',d.toLocaleDateString('en-GB',{month:'long',year:'numeric'})));
+    hdr.appendChild(el('span','ah-month-count',ms.length+' meet'+(ms.length!==1?'s':'')));
+    wrap.appendChild(hdr);
+    ms.forEach(function(m){wrap.appendChild(buildCompactRow(m));});
+  });
+}
+
+/* ════════════════════════════════════════════
+   RENDER — CARDS (list view)
+   ════════════════════════════════════════════ */
+function renderCards(filtered){
+  var wrap=document.getElementById('ah-cards');
+  wrap.innerHTML='';
+  if(S.loading){
+    wrap.innerHTML='<div class="ah-loading"><span class="ah-dot"></span><span class="ah-dot"></span><span class="ah-dot"></span><p style="margin-top:.75rem">Loading meets\u2026</p></div>';
+    return;
+  }
+  if(S.error)wrap.innerHTML='<div class="ah-err">Could not load live data \u2014 showing sample meets. Update DATA_URL in the script.</div>';
+  if(!filtered.length){wrap.innerHTML+='<div class="ah-empty">No meets match your current filters.</div>';return;}
+  if(S.view==='season'){renderSeasonView(filtered);return;}
+  var frag=document.createDocumentFragment();
+  filtered.forEach(function(m){frag.appendChild(buildCard(m));});
+  wrap.appendChild(frag);
+}
+
+/* ════════════════════════════════════════════
+   RENDER ALL
+   ════════════════════════════════════════════ */
+function renderAll(){
+  var filtered=getFiltered();
+  renderStats(filtered);
+  renderMonthChips();
+  renderEvGroups();
+  renderCatChips();
+  renderRegionChips();
+  renderGenToggle();
+  renderViewToggle();
+  document.getElementById('ah-q').value=S.q;
+  document.getElementById('ah-sort').value=S.sort;
+  renderCards(filtered);
+  // Store filtered for export button
+  window._ahFiltered=filtered;
+}
+
+/* ════════════════════════════════════════════
+   EVENT LISTENERS
+   ════════════════════════════════════════════ */
+document.getElementById('ah-q').addEventListener('input',function(e){S.q=e.target.value;renderAll();});
+document.getElementById('ah-sort').addEventListener('change',function(e){S.sort=e.target.value;writeParams();renderAll();});
+document.getElementById('ah-gen').addEventListener('click',function(e){if(e.target.dataset.g){S.gender=e.target.dataset.g;writeParams();renderAll();}});
+document.getElementById('ah-view').addEventListener('click',function(e){if(e.target.dataset.v){S.view=e.target.dataset.v;writeParams();renderAll();}});
+document.getElementById('ah-cats').addEventListener('click',function(e){
+  var c=e.target.dataset.c;if(!c)return;
+  var i=S.selCats.indexOf(c);if(i===-1)S.selCats.push(c);else S.selCats.splice(i,1);
+  writeParams();renderAll();
+});
+document.getElementById('ah-regions').addEventListener('click',function(e){
+  var r=e.target.dataset.r;if(!r)return;
+  S.selRegion=(S.selRegion===r)?'':r;
+  writeParams();renderAll();
+});
+document.getElementById('ah-cclr').addEventListener('click',function(){S.selCats=[];writeParams();renderAll();});
+document.getElementById('ah-rclr').addEventListener('click',function(){S.selRegion='';writeParams();renderAll();});
+document.getElementById('ah-evclr').addEventListener('click',function(){S.selEvs=[];writeParams();renderAll();});
+document.getElementById('ah-clearall').addEventListener('click',function(){
+  S.gender='All';S.selEvs=[];S.selCats=[];S.selMonths=[];S.selRegion='';S.q='';S.sort='date';
+  writeParams();renderAll();
+});
+
+// Season quick buttons
+document.querySelectorAll('.ah-sbtn').forEach(function(b){
+  b.addEventListener('click',function(){
+    var s=b.dataset.season;
+    document.querySelectorAll('.ah-sbtn').forEach(function(x){x.classList.remove('on');});
+    if(s==='indoor'){S.selMonths=INDOOR_MONTHS.slice();b.classList.add('on');}
+    else if(s==='outdoor'){S.selMonths=OUTDOOR_MONTHS.slice();b.classList.add('on');}
+    else{S.selMonths=[];}
+    writeParams();renderAll();
+  });
+});
+
+// Export & share
+document.getElementById('ah-ics-btn').addEventListener('click',function(){downloadICS(window._ahFiltered||[]);});
+document.getElementById('ah-share-btn').addEventListener('click',function(){
+  writeParams();
+  var url=window.location.href;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(url).then(function(){
+      var c=document.getElementById('ah-copied');
+      c.style.display='inline';
+      setTimeout(function(){c.style.display='none';},2000);
+    });
+  }
+});
+
+/* ════════════════════════════════════════════
+   DATA FETCH
+   ════════════════════════════════════════════ */
+var SAMPLE_MEETS=[
+  {id:'1',name:'Prefontaine Classic',dateStart:'2026-05-23',dateEnd:'2026-05-23',city:'Eugene',countryCode:'USA',countryName:'United States',region:'AME',category:'DL',isIndoor:false,website:'https://prefontaineclassic.com',contact:{},events:{men:['100m','200m','400m','800m','1500m','mile','5000m','110mh','400mh','3000sc','hj','pv','lj','tj','sp','dt'],women:['100m','200m','400m','800m','1500m','mile','5000m','10000m','100mh','400mh','3000sc','hj','pv','lj','sp','jt']}},
+  {id:'2',name:'Bislett Games',dateStart:'2026-05-28',dateEnd:'2026-05-28',city:'Oslo',countryCode:'NOR',countryName:'Norway',region:'EUR',category:'DL',isIndoor:false,website:'https://bislett.no',contact:{name:'Meet Director',email:'entries@bislett.no'},events:{men:['100m','800m','1500m','mile','5000m','3000sc','110mh','pv','lj','jt'],women:['100m','800m','1500m','mile','3000m','5000m','3000sc','100mh','hj','jt']}},
+  {id:'3',name:'FBK Games',dateStart:'2026-06-07',dateEnd:'2026-06-07',city:'Hengelo',countryCode:'NED',countryName:'Netherlands',region:'EUR',category:'CTG',isIndoor:false,website:'https://fbkgames.nl',contact:{},events:{men:['100m','400m','800m','1500m','5000m','10000m','110mh','400mh','3000sc','hj','lj','tj','sp','dt','ht','jt','4x100','4x400'],women:['100m','200m','400m','800m','1500m','3000m','10000m','100mh','400mh','hj','pv','tj','sp','ht','jt','4x100','4x400']}},
+  {id:'4',name:'Golden Gala Pietro Mennea',dateStart:'2026-06-05',dateEnd:'2026-06-05',city:'Rome',countryCode:'ITA',countryName:'Italy',region:'EUR',category:'DL',isIndoor:false,website:'https://goldengala.it',contact:{},events:{men:['100m','200m','400m','800m','1500m','5000m','10000m','110mh','400mh','3000sc','hj','pv','lj','tj','sp','ht','jt'],women:['100m','200m','400m','800m','1500m','mile','100mh','400mh','3000sc','pv','lj','sp','dt','jt']}},
+  {id:'5',name:'Paavo Nurmi Games',dateStart:'2026-06-09',dateEnd:'2026-06-09',city:'Turku',countryCode:'FIN',countryName:'Finland',region:'EUR',category:'CTG',isIndoor:false,website:'',contact:{name:'',email:'info@paavonurmigames.fi'},events:{men:['100m','200m','800m','1500m','mile','5000m','10000m','110mh','3000sc','pv','lj','sp','ht','jt'],women:['100m','800m','1500m','3000m','5000m','100mh','3000sc','hj','lj','sp','ht','jt']}},
+  {id:'6',name:'Paris Diamond League',dateStart:'2026-07-07',dateEnd:'2026-07-07',city:'Paris',countryCode:'FRA',countryName:'France',region:'EUR',category:'DL',isIndoor:false,website:'https://meetingparis.fr',contact:{},events:{men:['100m','400m','800m','1500m','3000m','110mh','400mh','hj','pv','tj','sp','dt'],women:['100m','400m','800m','mile','5000m','100mh','400mh','hj','pv','lj','sp','jt']}},
+  {id:'7',name:'Bauhaus-Galan',dateStart:'2026-07-01',dateEnd:'2026-07-01',city:'Stockholm',countryCode:'SWE',countryName:'Sweden',region:'EUR',category:'DL',isIndoor:false,website:'https://bauhaus-galan.se',contact:{},events:{men:['100m','200m','400m','800m','1500m','5000m','110mh','400mh','3000sc','hj','pv','sp','dt'],women:['100m','200m','400m','800m','1500m','5000m','100mh','400mh','3000sc','hj','pv','sp','jt']}},
+  {id:'8',name:'Herculis Monaco',dateStart:'2026-07-10',dateEnd:'2026-07-10',city:'Monaco',countryCode:'MON',countryName:'Monaco',region:'EUR',category:'DL',isIndoor:false,website:'https://herculis.com',contact:{},events:{men:['100m','200m','800m','1500m','mile','5000m','110mh','hj','pv','lj','sp','ht'],women:['100m','400m','800m','1500m','5000m','100mh','hj','tj','dt','jt']}},
+  {id:'9',name:'London Athletics Meet',dateStart:'2026-07-19',dateEnd:'2026-07-19',city:'London',countryCode:'GBR',countryName:'Great Britain',region:'EUR',category:'DL',isIndoor:false,website:'https://londonathletics.com',contact:{},events:{men:['100m','200m','400m','800m','1500m','5000m','110mh','400mh','3000sc','hj','pv','lj','sp','ht','4x100','4x400'],women:['100m','200m','400m','800m','1500m','5000m','100mh','400mh','3000sc','hj','pv','lj','sp','ht','4x100','4x400']}},
+  {id:'10',name:'Memorial Van Damme',dateStart:'2026-09-04',dateEnd:'2026-09-04',city:'Brussels',countryCode:'BEL',countryName:'Belgium',region:'EUR',category:'DL',isIndoor:false,website:'https://memorialvandamme.be',contact:{},events:{men:['100m','200m','400m','800m','1500m','mile','5000m','10000m','110mh','400mh','3000sc','hj','pv','lj','tj','sp','dt','ht','jt'],women:['100m','200m','400m','800m','1500m','5000m','10000m','100mh','400mh','3000sc','hj','pv','lj','tj','sp','dt','ht','jt']}},
+  {id:'11',name:'Athletissima Lausanne',dateStart:'2026-08-20',dateEnd:'2026-08-20',city:'Lausanne',countryCode:'SUI',countryName:'Switzerland',region:'EUR',category:'DL',isIndoor:false,website:'https://athletissima.ch',contact:{},events:{men:['100m','200m','400m','800m','1500m','5000m','110mh','400mh','hj','pv','lj','tj','sp','dt'],women:['100m','200m','400m','800m','mile','3000m','100mh','400mh','hj','pv','lj','sp','jt']}},
+  {id:'12',name:'Doha Diamond League',dateStart:'2026-05-08',dateEnd:'2026-05-08',city:'Doha',countryCode:'QAT',countryName:'Qatar',region:'ASI',category:'DL',isIndoor:false,website:'',contact:{email:'athletics@qaoc.qa'},events:{men:['100m','400m','800m','1500m','110mh','400mh','hj','pv','lj','sp','dt'],women:['100m','400m','800m','1500m','100mh','400mh','hj','pv','lj','sp','jt']}},
+  {id:'13',name:'Wanda Diamond League Final',dateStart:'2026-09-18',dateEnd:'2026-09-19',city:'Zurich',countryCode:'SUI',countryName:'Switzerland',region:'EUR',category:'DL',isIndoor:false,website:'https://weltklasse-zuerich.ch',contact:{},events:{men:['100m','200m','400m','800m','1500m','5000m','10000m','110mh','400mh','3000sc','hj','pv','lj','tj','sp','dt','ht','jt'],women:['100m','200m','400m','800m','1500m','5000m','10000m','100mh','400mh','3000sc','hj','pv','lj','tj','sp','dt','ht','jt']}},
+  {id:'14',name:'World Indoor Championships',dateStart:'2026-03-07',dateEnd:'2026-03-08',city:'Nanjing',countryCode:'CHN',countryName:'China',region:'ASI',category:'WCH',isIndoor:true,website:'https://worldathletics.org',contact:{},events:{men:['60m','400m','800m','1500m','3000m','60mh','hj','pv','lj','tj','sp','dec'],women:['60m','400m','800m','1500m','3000m','60mh','hj','pv','lj','tj','sp','pen']}},
+  {id:'15',name:'Athletissima Indoor',dateStart:'2026-02-05',dateEnd:'2026-02-05',city:'Lausanne',countryCode:'SUI',countryName:'Switzerland',region:'EUR',category:'ITG',isIndoor:true,website:'https://athletissima.ch',contact:{},events:{men:['60m','400m','800m','1500m','mile','3000m','60mh','hj','pv','lj','tj','sp'],women:['60m','400m','800m','1500m','mile','3000m','60mh','hj','pv','lj','sp']}},
+  {id:'16',name:'Golden Spike Ostrava',dateStart:'2026-06-19',dateEnd:'2026-06-19',city:'Ostrava',countryCode:'CZE',countryName:'Czech Republic',region:'EUR',category:'CTG',isIndoor:false,website:'https://goldspike.cz',contact:{},events:{men:['100m','200m','400m','800m','1500m','5000m','110mh','400mh','3000sc','hj','pv','lj','dt','jt'],women:['100m','400m','800m','1500m','5000m','100mh','400mh','3000sc','hj','pv','tj','sp','jt']}},
+  {id:'17',name:'Galan Rabat',dateStart:'2026-06-21',dateEnd:'2026-06-21',city:'Rabat',countryCode:'MAR',countryName:'Morocco',region:'AFR',category:'CTG',isIndoor:false,website:'',contact:{email:'frma@menara.ma'},events:{men:['100m','200m','400m','800m','1500m','5000m','110mh','400mh','3000sc','hj','lj','tj','sp'],women:['100m','200m','800m','1500m','3000m','100mh','400mh','3000sc','hj','lj','ht']}},
+];
+
+function applyData(data){
+  S.meets=data.meets||[];S.updated=data.updated;S.loading=false;S.error=false;
+  readParams();renderAll();
+}
+function loadData(){
+  try{
+    var raw=localStorage.getItem(CACHE_KEY);
+    if(raw){var obj=JSON.parse(raw);if(Date.now()-obj.ts<CACHE_TTL){applyData(obj.data);return;}}
+  }catch(e){}
+  fetch(DATA_URL)
+    .then(function(r){if(!r.ok)throw new Error(r.status);return r.json();})
+    .then(function(data){
+      try{localStorage.setItem(CACHE_KEY,JSON.stringify({ts:Date.now(),data:data}));}catch(e){}
+      applyData(data);
+    })
+    .catch(function(){
+      S.meets=SAMPLE_MEETS;S.updated=new Date().toISOString();S.loading=false;S.error=true;
+      readParams();renderAll();
+    });
+}
+
+readParams();
+loadData();
+
+})();
+</script>
+</body>
+</html>
