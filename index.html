@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meet Map - Race Hub</title>
 <!--
-  ATHLETICS RACE HUB  v3  —  seanwhipp.com
+  MEET MAP - RACE HUB v3  —  seanwhipp.com
   ==========================================
   WordPress Business/Creator plan:
     Copy from <style> to </script> → paste into Custom HTML block.
@@ -282,6 +282,17 @@
       </div>
     </div>
 
+    <!-- Row 3b: country filter -->
+    <div class="ah-fr">
+      <span class="ah-flbl">Country</span>
+      <div style="display:flex;gap:.4rem;align-items:center;flex:1">
+        <select id="ah-country" class="ah-sort" style="flex:1;max-width:260px">
+          <option value="">All countries</option>
+        </select>
+        <button class="ah-clr" id="ah-cnclr" style="display:none">✕</button>
+      </div>
+    </div>
+
     <!-- Row 4: competition level -->
     <div class="ah-fr">
       <span class="ah-flbl">Level</span>
@@ -408,11 +419,47 @@ var FLAGS={
 };
 
 /* ════════════════════════════════════════════
+   COUNTRY NAMES  (code → full name)
+   ════════════════════════════════════════════ */
+var COUNTRY_NAMES={
+  AUS:'Australia',NZL:'New Zealand',PNG:'Papua New Guinea',
+  GBR:'Great Britain',FRA:'France',GER:'Germany',ITA:'Italy',
+  SWE:'Sweden',NOR:'Norway',FIN:'Finland',NED:'Netherlands',
+  BEL:'Belgium',SUI:'Switzerland',CZE:'Czech Republic',POL:'Poland',
+  GRE:'Greece',ESP:'Spain',POR:'Portugal',TUR:'Turkey',HUN:'Hungary',
+  AUT:'Austria',DEN:'Denmark',SVK:'Slovakia',SLO:'Slovenia',
+  CRO:'Croatia',SRB:'Serbia',ROM:'Romania',BUL:'Bulgaria',
+  LAT:'Latvia',EST:'Estonia',LTU:'Lithuania',BLR:'Belarus',
+  UKR:'Ukraine',MON:'Monaco',ISR:'Israel',IRL:'Ireland',
+  CYP:'Cyprus',MDA:'Moldova',ALB:'Albania',MKD:'North Macedonia',
+  BIH:'Bosnia & Herzegovina',MNE:'Montenegro',GEO:'Georgia',
+  ARM:'Armenia',AZE:'Azerbaijan',RUS:'Russia',LUX:'Luxembourg',
+  MLT:'Malta',LIE:'Liechtenstein',SCO:'Scotland',WAL:'Wales',
+  USA:'United States',CAN:'Canada',JAM:'Jamaica',BAH:'Bahamas',
+  BRA:'Brazil',ARG:'Argentina',MEX:'Mexico',CUB:'Cuba',
+  TTO:'Trinidad & Tobago',COL:'Colombia',VEN:'Venezuela',
+  ECU:'Ecuador',PER:'Peru',CHI:'Chile',URU:'Uruguay',BOL:'Bolivia',
+  PAN:'Panama',DOM:'Dominican Republic',BAR:'Barbados',GRN:'Grenada',
+  QAT:'Qatar',UAE:'United Arab Emirates',CHN:'China',JPN:'Japan',
+  KOR:'South Korea',IND:'India',KAZ:'Kazakhstan',BRN:'Bahrain',
+  IRI:'Iran',TPE:'Chinese Taipei',THA:'Thailand',MAS:'Malaysia',
+  SGP:'Singapore',PHI:'Philippines',SRI:'Sri Lanka',UZB:'Uzbekistan',
+  KGZ:'Kyrgyzstan',TJK:'Tajikistan',BHR:'Bahrain',OMA:'Oman',
+  KSA:'Saudi Arabia',KUW:'Kuwait',
+  KEN:'Kenya',ETH:'Ethiopia',MAR:'Morocco',RSA:'South Africa',
+  NGR:'Nigeria',ALG:'Algeria',TUN:'Tunisia',EGY:'Egypt',
+  UGA:'Uganda',TAN:'Tanzania',GHA:'Ghana',SEN:'Senegal',
+  CMR:'Cameroon',ZIM:'Zimbabwe',BOT:'Botswana',NAM:'Namibia',
+  BUR:'Burkina Faso',CIV:'Ivory Coast',
+};
+function countryName(code){return COUNTRY_NAMES[code]||code;}
+
+/* ════════════════════════════════════════════
    STATE
    ════════════════════════════════════════════ */
 var S={
   meets:[],loading:true,error:false,updated:null,
-  gender:'All',selEvs:[],selCats:[],selMonths:[],selRegion:'',
+  gender:'All',selEvs:[],selCats:[],selMonths:[],selRegion:'',selCountry:'',
   q:'',sort:'date',view:'list'
 };
 var TODAY=(function(){var d=new Date();d.setHours(0,0,0,0);return d;})();
@@ -460,6 +507,7 @@ function readParams(){
   if(p.get('c'))S.selCats=p.get('c').split(',').filter(Boolean);
   if(p.get('m'))S.selMonths=p.get('m').split(',').map(Number).filter(Boolean);
   if(p.get('r'))S.selRegion=p.get('r');
+  if(p.get('cn'))S.selCountry=p.get('cn');
   if(p.get('s'))S.sort=p.get('s');
   if(p.get('v'))S.view=p.get('v');
 }
@@ -470,6 +518,7 @@ function writeParams(){
   if(S.selCats.length)p.set('c',S.selCats.join(','));
   if(S.selMonths.length)p.set('m',S.selMonths.join(','));
   if(S.selRegion)p.set('r',S.selRegion);
+  if(S.selCountry)p.set('cn',S.selCountry);
   if(S.sort!=='date')p.set('s',S.sort);
   if(S.view!=='list')p.set('v',S.view);
   var qs=p.toString();
@@ -490,6 +539,7 @@ function getFiltered(){
     }
     if(S.selMonths.length&&S.selMonths.indexOf(meetMonth(m))===-1)return false;
     if(S.selRegion&&m.region!==S.selRegion)return false;
+    if(S.selCountry&&m.countryCode!==S.selCountry)return false;
     if(S.selCats.length&&S.selCats.indexOf(m.category)===-1)return false;
     var evs=getMeetEvs(m,S.gender);
     if(S.selEvs.length){
@@ -617,6 +667,27 @@ function renderCatChips(){
   document.querySelectorAll('#ah-cats .ah-chip').forEach(function(b){b.classList.toggle('on',S.selCats.indexOf(b.dataset.c)!==-1);});
   document.getElementById('ah-cclr').style.display=S.selCats.length?'inline':'none';
 }
+function renderCountrySelect(){
+  var sel=document.getElementById('ah-country');
+  var current=S.selCountry;
+  // Build sorted list of countries that actually appear in the loaded meets
+  var codes={};
+  S.meets.forEach(function(m){if(m.countryCode)codes[m.countryCode]=true;});
+  var sorted=Object.keys(codes).sort(function(a,b){
+    return countryName(a).localeCompare(countryName(b));
+  });
+  sel.innerHTML='<option value="">All countries</option>';
+  sorted.forEach(function(code){
+    var opt=document.createElement('option');
+    opt.value=code;
+    var flag=FLAGS[code]||'';
+    opt.textContent=(flag?flag+' ':'')+countryName(code);
+    if(code===current)opt.selected=true;
+    sel.appendChild(opt);
+  });
+  document.getElementById('ah-cnclr').style.display=S.selCountry?'inline':'none';
+}
+
 function renderRegionChips(){
   document.querySelectorAll('#ah-regions .ah-chip').forEach(function(b){b.classList.toggle('on',b.dataset.r===S.selRegion);});
   document.getElementById('ah-rclr').style.display=S.selRegion?'inline':'none';
@@ -802,6 +873,7 @@ function renderAll(){
   renderEvGroups();
   renderCatChips();
   renderRegionChips();
+  renderCountrySelect();
   renderGenToggle();
   renderViewToggle();
   document.getElementById('ah-q').value=S.q;
@@ -829,10 +901,18 @@ document.getElementById('ah-regions').addEventListener('click',function(e){
   writeParams();renderAll();
 });
 document.getElementById('ah-cclr').addEventListener('click',function(){S.selCats=[];writeParams();renderAll();});
+document.getElementById('ah-country').addEventListener('change',function(e){
+  S.selCountry=e.target.value;
+  writeParams();renderAll();
+});
+document.getElementById('ah-cnclr').addEventListener('click',function(){
+  S.selCountry='';
+  writeParams();renderAll();
+});
 document.getElementById('ah-rclr').addEventListener('click',function(){S.selRegion='';writeParams();renderAll();});
 document.getElementById('ah-evclr').addEventListener('click',function(){S.selEvs=[];writeParams();renderAll();});
 document.getElementById('ah-clearall').addEventListener('click',function(){
-  S.gender='All';S.selEvs=[];S.selCats=[];S.selMonths=[];S.selRegion='';S.q='';S.sort='date';
+  S.gender='All';S.selEvs=[];S.selCats=[];S.selMonths=[];S.selRegion='';S.selCountry='';S.q='';S.sort='date';
   writeParams();renderAll();
 });
 
