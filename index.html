@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Meet Map — Race Hub</title>
+<title>Meet Map — Athletics Calendar</title>
 <!--
   MEET MAP  v3
   ==========================================
@@ -11,7 +11,7 @@
     Copy from <style> to </script> → paste into Custom HTML block.
 
   Any WordPress plan (iframe):
-    <iframe src="https://SimpleScraper1.github.io/athletics-hub/"
+    <iframe src="https://YOUR-USERNAME.github.io/athletics-hub/"
       style="width:100%;height:1050px;border:none;"></iframe>
 
   Update DATA_URL inside the script CONFIG section.
@@ -43,15 +43,20 @@
 .ah-sv{font-size:1.5rem;font-weight:700;line-height:1}
 
 /* ── Filter panel ── */
-.ah-fp{background:#fff;border:1px solid #e8e8e8;border-radius:10px;padding:1.25rem;margin-bottom:1rem}
-.ah-fr{display:flex;flex-wrap:wrap;gap:.55rem;align-items:center;margin-bottom:.9rem}
-.ah-fr:last-child{margin-bottom:0}
+.ah-fp{background:#f5f5f5;border-radius:10px;padding:.75rem;margin-bottom:.9rem}
+.ah-fp-top{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-bottom:.65rem}
+.ah-fgroups{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}
+.ah-fgroup{background:#fff;border:1px solid #e8e8e8;border-radius:8px;overflow:hidden}
+.ah-fgroup.full{grid-column:1/-1}
+.ah-fgroup-lbl{font-size:.67rem;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:#999;padding:.4rem .75rem;border-bottom:1px solid #f0f0f0;background:#fafafa}
+.ah-fgroup-body{padding:.6rem .75rem;display:flex;flex-direction:column;gap:.45rem}
+.ah-fr{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center}
 .ah-flbl{font-size:.69rem;text-transform:uppercase;letter-spacing:.07em;color:#aaa;min-width:68px;flex-shrink:0;padding-top:3px}
 .ah-section-label{font-size:.69rem;text-transform:uppercase;letter-spacing:.07em;color:#aaa;margin-bottom:.45rem}
 
 /* Search */
 .ah-sw{position:relative;flex:1;min-width:160px}
-.ah-sw input{width:100%;padding:.4rem .7rem .4rem 1.85rem;border:1px solid #ddd;border-radius:6px;font-size:.875rem;outline:none;background:#fafafa;transition:border-color .15s,background .15s}
+.ah-sw input{width:100%;padding:.42rem .7rem .42rem 1.85rem;border:1px solid #ddd;border-radius:6px;font-size:.875rem;outline:none;background:#fafafa;transition:border-color .15s,background .15s}
 .ah-sw input:focus{border-color:#111;background:#fff}
 .ah-si{position:absolute;left:.55rem;top:50%;transform:translateY(-50%);color:#ccc;font-size:.85rem;pointer-events:none}
 
@@ -66,7 +71,7 @@
 
 /* Chips */
 .ah-chips{display:flex;flex-wrap:wrap;gap:.3rem;align-items:center}
-.ah-chip{padding:.22rem .65rem;font-size:.78rem;border:1px solid #ddd;border-radius:20px;background:transparent;color:#555;transition:all .12s;white-space:nowrap}
+.ah-chip{padding:.28rem .75rem;font-size:.78rem;border:1px solid #ddd;border-radius:20px;background:transparent;color:#555;transition:all .12s;white-space:nowrap;cursor:pointer}
 .ah-chip:hover{border-color:#888;color:#111}
 .ah-chip.on{background:#111;border-color:#111;color:#fff;font-weight:600}
 .ah-chip.dl.on   {background:#1a56a0;border-color:#1a56a0}
@@ -76,30 +81,27 @@
 .ah-chip.itg.on  {background:#166534;border-color:#166534}
 .ah-chip.wch.on  {background:#6d28d9;border-color:#6d28d9}
 .ah-chip.nat.on  {background:#374151;border-color:#374151}
-.ah-chip.mo.on   {background:#1a56a0;border-color:#1a56a0}  /* month active */
-.ah-chip.ind-on  {background:#0e7490;border-color:#0e7490}  /* indoor active */
-.ah-clr{font-size:.74rem;color:#bbb;background:none;border:none;padding:.2rem .4rem;white-space:nowrap}
+.ah-chip.mo.on   {background:#1a56a0;border-color:#1a56a0}
+.ah-clr{font-size:.74rem;color:#bbb;background:none;border:none;padding:.2rem .4rem;white-space:nowrap;cursor:pointer}
 .ah-clr:hover{color:#555}
-.ah-cleara{font-size:.74rem;color:#bbb;background:none;border:1px solid #eee;border-radius:20px;padding:.2rem .65rem;white-space:nowrap}
+.ah-cleara{font-size:.74rem;color:#bbb;background:none;border:1px solid #eee;border-radius:20px;padding:.22rem .65rem;white-space:nowrap;cursor:pointer}
 .ah-cleara:hover{color:#555;border-color:#bbb}
 
 /* Month quick buttons */
-.ah-season-btns{display:flex;gap:.35rem;margin-bottom:.45rem}
-.ah-sbtn{padding:.22rem .75rem;font-size:.75rem;border:1px solid #ddd;border-radius:20px;background:transparent;color:#555;transition:all .12s}
+.ah-season-btns{display:flex;gap:.35rem;flex-wrap:wrap}
+.ah-sbtn{padding:.28rem .75rem;font-size:.75rem;border:1px solid #ddd;border-radius:20px;background:transparent;color:#555;transition:all .12s;cursor:pointer}
 .ah-sbtn:hover{border-color:#888;color:#111}
 .ah-sbtn.on{background:#0e7490;border-color:#0e7490;color:#fff;font-weight:600}
 
 /* Event group rows */
 .ah-evg{display:flex;flex-direction:column;gap:.35rem}
-.ah-evr{display:flex;flex-wrap:wrap;gap:.3rem;align-items:center}
+.ah-evr{display:flex;flex-wrap:wrap;gap:.28rem;align-items:center}
 
 /* Action bar */
 .ah-actions{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-bottom:.8rem}
 .ah-cnt{font-size:.8rem;color:#999;flex:1}
-.ah-act-btn{padding:.35rem .9rem;font-size:.78rem;border:1px solid #ddd;border-radius:6px;background:#fff;color:#555;transition:all .12s;display:flex;align-items:center;gap:.3rem}
+.ah-act-btn{padding:.35rem .9rem;font-size:.78rem;border:1px solid #ddd;border-radius:6px;background:#fff;color:#555;transition:all .12s;display:flex;align-items:center;gap:.3rem;cursor:pointer}
 .ah-act-btn:hover{border-color:#888;color:#111}
-.ah-act-btn.primary{background:#111;border-color:#111;color:#fff}
-.ah-act-btn.primary:hover{background:#333;border-color:#333}
 .ah-copied{color:#059669;font-size:.75rem}
 
 /* ── Cards ── */
@@ -118,7 +120,12 @@
 .ah-card-bar.wch  {background:#6d28d9}
 .ah-card-bar.nat  {background:#374151}
 
-.ah-card-body{padding:1rem 1.2rem}
+.ah-card-body{padding:.85rem 1.1rem .75rem}
+
+/* Card footer — date left, actions right */
+.ah-card-footer{display:flex;justify-content:space-between;align-items:center;padding:.55rem 1.1rem;border-top:1px solid #f0f0f0;background:#fafafa}
+.ah-footer-date{font-size:.82rem;font-weight:600;color:#444}
+.ah-footer-right{display:flex;gap:.5rem;align-items:center}
 
 /* Card top row */
 .ah-ct{display:flex;flex-wrap:wrap;gap:.75rem;justify-content:space-between;margin-bottom:.85rem}
@@ -232,8 +239,8 @@
   <!-- Filters -->
   <div class="ah-fp">
 
-    <!-- Row 1: search + gender + view + sort -->
-    <div class="ah-fr">
+    <!-- Top bar: search + controls -->
+    <div class="ah-fp-top">
       <div class="ah-sw">
         <span class="ah-si">⌕</span>
         <input type="text" id="ah-q" placeholder="Search meet, city, country…">
@@ -251,72 +258,73 @@
         <option value="date">Sort: date</option>
         <option value="level">Sort: level</option>
       </select>
-      <button class="ah-cleara" id="ah-clearall">Clear all filters</button>
+      <button class="ah-cleara" id="ah-clearall">Clear all</button>
     </div>
 
-    <!-- Row 2: season (indoor/outdoor) + month chips -->
-    <div class="ah-fr" style="align-items:flex-start">
-      <span class="ah-flbl" style="padding-top:5px">Period</span>
-      <div style="flex:1">
-        <div class="ah-season-btns">
-          <button class="ah-sbtn" data-season="indoor">Indoor season</button>
-          <button class="ah-sbtn" data-season="outdoor">Outdoor season</button>
-          <button class="ah-sbtn" data-season="clear">All year</button>
+    <!-- Grouped filter cards -->
+    <div class="ah-fgroups">
+
+      <!-- Group 1: Period -->
+      <div class="ah-fgroup">
+        <div class="ah-fgroup-lbl">Period</div>
+        <div class="ah-fgroup-body">
+          <div class="ah-season-btns">
+            <button class="ah-sbtn" data-season="indoor">Indoor</button>
+            <button class="ah-sbtn" data-season="outdoor">Outdoor</button>
+            <button class="ah-sbtn" data-season="clear">All year</button>
+          </div>
+          <div class="ah-chips" id="ah-months"></div>
         </div>
-        <div class="ah-chips" id="ah-months">
-          <!-- populated by JS -->
+      </div>
+
+      <!-- Group 2: Location -->
+      <div class="ah-fgroup">
+        <div class="ah-fgroup-lbl">Location</div>
+        <div class="ah-fgroup-body">
+          <div class="ah-chips" id="ah-regions">
+            <button class="ah-chip" data-r="EUR">Europe</button>
+            <button class="ah-chip" data-r="AME">Americas</button>
+            <button class="ah-chip" data-r="ASI">Asia / Mid East</button>
+            <button class="ah-chip" data-r="AFR">Africa</button>
+            <button class="ah-chip" data-r="OCE">Oceania</button>
+            <button class="ah-clr" id="ah-rclr" style="display:none">✕</button>
+          </div>
+          <div style="display:flex;gap:.35rem;align-items:center">
+            <select id="ah-country" class="ah-sort" style="flex:1">
+              <option value="">All countries</option>
+            </select>
+            <button class="ah-clr" id="ah-cnclr" style="display:none">✕</button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Row 3: region filter -->
-    <div class="ah-fr">
-      <span class="ah-flbl">Region</span>
-      <div class="ah-chips" id="ah-regions">
-        <button class="ah-chip" data-r="EUR">Europe</button>
-        <button class="ah-chip" data-r="AME">Americas</button>
-        <button class="ah-chip" data-r="ASI">Asia / Mid East</button>
-        <button class="ah-chip" data-r="AFR">Africa</button>
-        <button class="ah-chip" data-r="OCE">Oceania</button>
-        <button class="ah-clr" id="ah-rclr" style="display:none">✕</button>
+      <!-- Group 3: Competition Level -->
+      <div class="ah-fgroup">
+        <div class="ah-fgroup-lbl">Competition level</div>
+        <div class="ah-fgroup-body">
+          <div class="ah-chips" id="ah-cats">
+            <button class="ah-chip dl"  data-c="DL">Diamond League</button>
+            <button class="ah-chip ctg" data-c="CTG">CT Gold</button>
+            <button class="ah-chip cts" data-c="CTS">CT Silver</button>
+            <button class="ah-chip ctb" data-c="CTB">CT Bronze</button>
+            <button class="ah-chip itg" data-c="ITG">Indoor Tour</button>
+            <button class="ah-chip wch" data-c="WCH">World Chpts</button>
+            <button class="ah-chip nat" data-c="NAT">National Chpts</button>
+            <button class="ah-clr" id="ah-cclr" style="display:none">✕</button>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <!-- Row 3b: country filter -->
-    <div class="ah-fr">
-      <span class="ah-flbl">Country</span>
-      <div style="display:flex;gap:.4rem;align-items:center;flex:1">
-        <select id="ah-country" class="ah-sort" style="flex:1;max-width:260px">
-          <option value="">All countries</option>
-        </select>
-        <button class="ah-clr" id="ah-cnclr" style="display:none">✕</button>
+      <!-- Group 4: Event (full width) -->
+      <div class="ah-fgroup full">
+        <div class="ah-fgroup-lbl">Event</div>
+        <div class="ah-fgroup-body">
+          <div class="ah-evg" id="ah-evg"></div>
+          <button class="ah-clr" id="ah-evclr" style="display:none">✕ clear event filters</button>
+        </div>
       </div>
-    </div>
 
-    <!-- Row 4: competition level -->
-    <div class="ah-fr">
-      <span class="ah-flbl">Level</span>
-      <div class="ah-chips" id="ah-cats">
-        <button class="ah-chip dl"  data-c="DL">Diamond League</button>
-        <button class="ah-chip ctg" data-c="CTG">CT Gold</button>
-        <button class="ah-chip cts" data-c="CTS">CT Silver</button>
-        <button class="ah-chip ctb" data-c="CTB">CT Bronze</button>
-        <button class="ah-chip itg" data-c="ITG">Indoor Tour</button>
-        <button class="ah-chip wch" data-c="WCH">World Chpts</button>
-        <button class="ah-chip nat" data-c="NAT">National Chpts</button>
-        <button class="ah-clr" id="ah-cclr" style="display:none">✕</button>
-      </div>
     </div>
-
-    <!-- Row 5: event filter -->
-    <div class="ah-fr" style="align-items:flex-start">
-      <span class="ah-flbl" style="padding-top:5px">Event</span>
-      <div style="flex:1">
-        <div class="ah-evg" id="ah-evg"></div>
-        <button class="ah-clr" id="ah-evclr" style="display:none;margin-top:.4rem">✕ clear event filters</button>
-      </div>
-    </div>
-
   </div><!-- /filters -->
 
   <!-- Action bar -->
@@ -349,7 +357,7 @@
 /* ════════════════════════════════════════════
    CONFIG — update DATA_URL to your GitHub raw JSON file
    ════════════════════════════════════════════ */
-var DATA_URL  = 'https://raw.githubusercontent.com/SimpleScraper1/athletics-data/main/data/meets.json';
+var DATA_URL  = 'https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/athletics-data/main/data/meets.json';
 var CACHE_KEY = 'ah_v3';
 var CACHE_TTL = 6*60*60*1000;
 
@@ -712,64 +720,33 @@ function buildCard(meet){
   var card=el('div','ah-card'+(past?' past':'')+(meet.isIndoor?' indoor':''));
 
   // Colour bar at top
-  var bar=el('div','ah-card-bar '+(CAT_BAR[meet.category]||''));
-  card.appendChild(bar);
+  card.appendChild(el('div','ah-card-bar '+(CAT_BAR[meet.category]||'')));
 
   var body=el('div','ah-card-body');
 
-  // Top row
-  var top=el('div','ah-ct');
-  var main=el('div','ah-cm');
+  // Name + badge row
   var tr=el('div','ah-tr');
-
   var flag=FLAGS[meet.countryCode]||'';
   if(flag){var fs=el('span','ah-flag');fs.textContent=flag;tr.appendChild(fs);}
   tr.appendChild(el('span','ah-cn',meet.name));
-
   var catLbl=CAT_LBL[meet.category]||meet.category||'Other';
-  var catBdg=CAT_BADGE[meet.category]||'bdg-oth';
-  tr.appendChild(el('span','ah-bdg '+catBdg,catLbl));
+  tr.appendChild(el('span','ah-bdg '+(CAT_BADGE[meet.category]||'bdg-oth'),catLbl));
   if(meet.isIndoor)tr.appendChild(el('span','ah-bdg bdg-ind','Indoor'));
   if(past)tr.appendChild(el('span','ah-bdg bdg-pst','Past'));
-  else tr.appendChild(el('span','ah-bdg bdg-up','Upcoming'));
-  main.appendChild(tr);
-  main.appendChild(el('div','ah-meta',(meet.city?meet.city+', ':'')+meet.countryName));
-  top.appendChild(main);
+  body.appendChild(tr);
 
-  // Right
-  var cr=el('div','ah-cr');
-  cr.appendChild(el('div','ah-date',fmtDateRange(meet.dateStart,meet.dateEnd)));
-
-  if(meet.website){
-    var wa=document.createElement('a');
-    wa.href=meet.website;wa.target='_blank';wa.rel='noopener noreferrer';
-    wa.className='ah-web';wa.textContent='Meet website \u2192';
-    cr.appendChild(wa);
-  }else if(meet.contact&&meet.contact.email){
-    var ea=document.createElement('a');
-    ea.href='mailto:'+meet.contact.email;
-    ea.className='ah-web email';ea.textContent='Contact meet \u2192';
-    cr.appendChild(ea);
-  }else{
-    cr.appendChild(el('span','ah-web none','No website'));
-  }
-
-  // Add to calendar link
-  var calBtn=el('button','ah-cal-link','\uFF0B Add to calendar');
-  calBtn.addEventListener('click',function(){downloadICS([meet]);});
-  cr.appendChild(calBtn);
-  top.appendChild(cr);
-  body.appendChild(top);
+  // Location line
+  body.appendChild(el('div','ah-meta',(meet.city?meet.city+', ':'')+meet.countryName));
 
   // Event panel
   var panel=el('div','ah-ev-panel'+(S.gender!=='All'?' single':''));
+  panel.style.marginTop='.65rem';
   if(S.gender==='All'){
     var mc=el('div','ah-evcol');
     mc.appendChild(el('div','ah-evhdr','Men'));
     var mp=el('div','ah-pills');
     buildPills(meet.events&&meet.events.men,mp);
     mc.appendChild(mp);panel.appendChild(mc);
-
     var wc=el('div','ah-evcol');
     wc.appendChild(el('div','ah-evhdr','Women'));
     var wp=el('div','ah-pills');
@@ -777,14 +754,39 @@ function buildCard(meet){
     wc.appendChild(wp);panel.appendChild(wc);
   }else{
     var sc=el('div','ah-evcol');
-    var slbl=S.gender==='M'?'Men\'s programme':'Women\'s programme';
-    sc.appendChild(el('div','ah-evhdr',slbl));
+    sc.appendChild(el('div','ah-evhdr',S.gender==='M'?"Men's programme":"Women's programme"));
     var sp=el('div','ah-pills');
     buildPills(S.gender==='M'?(meet.events&&meet.events.men):(meet.events&&meet.events.women),sp);
     sc.appendChild(sp);panel.appendChild(sc);
   }
   body.appendChild(panel);
   card.appendChild(body);
+
+  // Footer — date left, website + calendar right
+  var footer=el('div','ah-card-footer');
+  footer.appendChild(el('div','ah-footer-date',fmtDateRange(meet.dateStart,meet.dateEnd)));
+  var fr=el('div','ah-footer-right');
+
+  if(meet.website){
+    var wa=document.createElement('a');
+    wa.href=meet.website;wa.target='_blank';wa.rel='noopener noreferrer';
+    wa.className='ah-web';wa.textContent='Meet website \u2192';
+    fr.appendChild(wa);
+  }else if(meet.contact&&meet.contact.email){
+    var ea=document.createElement('a');
+    ea.href='mailto:'+meet.contact.email;
+    ea.className='ah-web email';ea.textContent='Contact meet \u2192';
+    fr.appendChild(ea);
+  }else{
+    fr.appendChild(el('span','ah-web none','No website'));
+  }
+  var calBtn=el('button','ah-cal-link','\uFF0B Add to calendar');
+  calBtn.style.display='inline';calBtn.style.textAlign='left';
+  calBtn.addEventListener('click',function(){downloadICS([meet]);});
+  fr.appendChild(calBtn);
+  footer.appendChild(fr);
+  card.appendChild(footer);
+
   return card;
 }
 
