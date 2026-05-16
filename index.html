@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Meet Map - Race Hub</title>
+<title>Meet Map — Race Hub</title>
 <!--
-  MEET MAP - RACE HUB v3  —  seanwhipp.com
+  MEET MAP  v3
   ==========================================
   WordPress Business/Creator plan:
     Copy from <style> to </script> → paste into Custom HTML block.
 
   Any WordPress plan (iframe):
-    <iframe src="https://YOUR-USERNAME.github.io/athletics-hub/"
+    <iframe src="https://SimpleScraper1.github.io/athletics-hub/"
       style="width:100%;height:1050px;border:none;"></iframe>
 
   Update DATA_URL inside the script CONFIG section.
@@ -349,7 +349,7 @@
 /* ════════════════════════════════════════════
    CONFIG — update DATA_URL to your GitHub raw JSON file
    ════════════════════════════════════════════ */
-var DATA_URL  = 'https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/athletics-data/main/data/meets.json';
+var DATA_URL  = 'https://raw.githubusercontent.com/SimpleScraper1/athletics-data/main/data/meets.json';
 var CACHE_KEY = 'ah_v3';
 var CACHE_TTL = 6*60*60*1000;
 
@@ -567,9 +567,9 @@ function getFiltered(){
 function generateICS(meets){
   var lines=[
     'BEGIN:VCALENDAR','VERSION:2.0',
-    'PRODID:-//Athletics Hub//Whipp Sports//EN',
+    'PRODID:-//Meet Map//Athletics Calendar//EN',
     'CALSCALE:GREGORIAN','METHOD:PUBLISH',
-    'X-WR-CALNAME:Athletics Race Hub — seanwhipp.com',
+    'X-WR-CALNAME:Meet Map — Athletics Calendar',
   ];
   meets.forEach(function(m){
     var start=(m.dateStart||'').replace(/-/g,'');
@@ -592,7 +592,7 @@ function generateICS(meets){
     lines.push('LOCATION:'+((m.city?m.city+', ':'')+m.countryName).replace(/,/g,'\\,'));
     lines.push('DESCRIPTION:'+desc);
     if(m.website)lines.push('URL:'+m.website);
-    lines.push('UID:ath-hub-'+m.id+'@seanwhipp.com');
+    lines.push('UID:meet-map-'+m.id+'@athletics-calendar');
     lines.push('END:VEVENT');
   });
   lines.push('END:VCALENDAR');
